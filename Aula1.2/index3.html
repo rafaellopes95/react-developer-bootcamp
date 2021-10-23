@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Aula 1.2 UIEvent - beforeunload e unload</title>
+  </head>
+  <body>
+    <a href="http://igti.com.br">Página do IGTI</a>
+  </body>
+  <script>
+    window.addEventListener("beforeunload", () => {
+      console.log("Antes de sair.");
+    });
+
+    window.addEventListener("unload", () => {
+      console.log("Saiu da página.");
+    });
+  </script>
+</html>
