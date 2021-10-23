@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1.3 - MouseEvent click</title>
+  </head>
+  <body>
+    Exemplo de propriedade dos Eventos
+    <button type="button">Clique aqui</button>
+  </body>
+  <script>
+    let btn = document.querySelector("button");
+
+    btn.addEventListener("click", showPosition, false);
+
+    function showPosition(event) {
+      alert("Posição X: " + event.screenX + ", Posição Y: " + event.screenY);
+    }
+  </script>
+</html>
