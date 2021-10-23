@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button type="button">Clique aqui</button>
+    <a href="#">Clique aqui</a>
+  </body>
+</html>
+
+<!-- Manipulador addEventListener -->
+<script>
+  var btn = document.querySelector("button");
+  var link = document.querySelector("a");
+
+  btn.addEventListener("click", alerta);
+  link.addEventListener("click", alerta);
+
+  function alerta(event) {
+    // As vezes o event pode estar na variável global window, então esse tratamento é interessante por questão de compatibilidade.
+    let o_event = event ? event : window.event;
+    let msg = "Posição de X do mouse é " + event.screenX;
+    window.alert(msg);
+  }
+</script>
