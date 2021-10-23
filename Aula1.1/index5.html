@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style type="text/css">
+      div,
+      p,
+      a {
+        padding: 15px 30px;
+        display: block;
+        border: 2px solid #000;
+        background: #fff;
+      }
+    </style>
+    <title>Aula 1 - Propagação de evento Capture</title>
+  </head>
+  <body>
+    <div>
+      DIV
+      <p>
+        P
+        <a href="#">A</a>
+      </p>
+    </div>
+  </body>
+</html>
+
+<script>
+  var elements = document.querySelectorAll("div, p, a");
+
+  // O true indica para utilizar o método Capture
+  for (let element of elements) {
+    element.addEventListener("click", showElementTagName, true);
+  }
+
+  function showElementTagName() {
+    alert("Captura: " + this.tagName);
+  }
+</script>

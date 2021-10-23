@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style type="text/css">
+      div,
+      p,
+      a {
+        padding: 15px 30px;
+        display: block;
+        border: 2px solid #000;
+        background: #fff;
+      }
+    </style>
+    <title>Aula 1 - Propagação de evento Bubbling</title>
+  </head>
+  <body>
+    <div onclick="alert('Borbulhamento: ' + this.tagName)">
+      DIV
+      <p onclick="alert('Borbulhamento: ' + this.tagName)">
+        P
+        <a href="#" onclick="alert('Borbulhamento: ' + this.tagName)">A</a>
+      </p>
+    </div>
+  </body>
+</html>
