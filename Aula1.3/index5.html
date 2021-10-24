@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aula 1.3 - MouseEvent order de execução</title>
+  </head>
+  <body>
+    <input id="inp" value="Clique aqui" type="button" />
+    <textarea id="texta"></textarea>
+    <input type="button" onclick="texta.value=''" value="Clear" />
+  </body>
+  <script>
+    let inp = document.getElementById("inp");
+
+    inp.addEventListener("mousedown", log);
+    inp.addEventListener("mouseup", log);
+    inp.addEventListener("click", log);
+    inp.addEventListener("contextmenu", log);
+    inp.addEventListener("dblclick", log);
+
+    function log(event) {
+      document.getElementById("texta").value +=
+        event.type + " [target: " + event.which + "]\n";
+      document.getElementById("texta").scrollTop =
+        document.getElementById("texta").scrollHeight;
+    }
+  </script>
+</html>

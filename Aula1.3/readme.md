@@ -14,7 +14,9 @@ Estes são os principais eventos da MouseEvent:
 10. contextmenu
 
 Ordem dos eventos:
-mousedown -> mouseup -> click
+
+- mousedown -> mouseup -> click
+- mouseover -> mouseout
 
 Propriedades adicionais da MouseEvent:
 
