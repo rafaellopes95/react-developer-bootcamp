@@ -1,7 +1,3 @@
-let productsData;
-let brands;
-let types;
-
 function renderProducts() {
   fetchProducts().then((data) => {
     console.log("Produtos carregados!");
@@ -32,20 +28,6 @@ function renderProducts() {
       catalog.innerHTML += getProductItem(product);
     });
   });
-}
-
-function fetchBrandOptions() {
-  return fetch("http://makeup-api.herokuapp.com/api/v1/products.json", {
-    method: "GET",
-  })
-    .then((response) => {
-      return response.json().then((data) => Promise.resolve([data[0]]));
-    })
-    .catch((error) => {
-      console.error("ERRO!!!");
-      console.error(error);
-      return Promise.reject(error);
-    });
 }
 
 function fetchProducts() {
