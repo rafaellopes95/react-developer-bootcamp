@@ -18,7 +18,7 @@
           <input
             type="text"
             id="filter-name"
-            oninput="setProductName(this.value)"
+            oninput="setProductName(this.value.toLowerCase())"
           />
         </div>
         <div class="form-control">
@@ -41,12 +41,15 @@
         </div>
         <div class="form-control">
           <label for="sort"></label>
-          <select id="sort-type">
-            <option>Melhor Avaliados</option>
-            <option>Menores Preços</option>
-            <option>Maiores Preços</option>
-            <option>A-Z</option>
-            <option>Z-A</option>
+          <select
+            id="sort-type"
+            onchange="setSelectedOption('sort', this.value)"
+          >
+            <option value="rating">Melhor Avaliados</option>
+            <option value="lowest-price">Menores Preços</option>
+            <option value="highest-price">Maiores Preços</option>
+            <option value="a-z">A-Z</option>
+            <option value="z-a">Z-A</option>
           </select>
         </div>
         <button type="button" onclick="renderProducts()">Buscar</button>

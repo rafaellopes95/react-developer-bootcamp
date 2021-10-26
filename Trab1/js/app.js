@@ -1,6 +1,7 @@
 var productName;
 var selectedBrand;
 var selectedType;
+var selectedSort = "rating";
 
 function setProductName(value) {
   productName = value;
@@ -10,10 +11,13 @@ function setSelectedOption(option, value) {
   switch (option) {
     case "brand":
       selectedBrand = value;
-      return;
+      break;
     case "type":
       selectedType = value;
-      return;
+      break;
+    case "sort":
+      selectedSort = value;
+      break;
   }
 }
 
@@ -22,7 +26,10 @@ function initializeAllFilters() {
     // Populate brand options
     const brandOption = document.getElementById("filter-brand");
     const brandSet = new Set(
-      data.map((product) => product.brand).filter((brand) => brand)
+      data
+        .map((product) => product.brand)
+        .filter((brand) => brand)
+        .sort()
     );
     brandSet.forEach((brand) => {
       brandOption.innerHTML += `<option value="${brand}">${brand}</option>`;
@@ -31,7 +38,10 @@ function initializeAllFilters() {
     // Populate type options
     const typeOption = document.getElementById("filter-type");
     const typeSet = new Set(
-      data.map((product) => product.product_type).filter((type) => type)
+      data
+        .map((product) => product.product_type)
+        .filter((type) => type)
+        .sort()
     );
     typeSet.forEach((type) => {
       typeOption.innerHTML += `<option value="${type}">${type}</option>`;
@@ -67,6 +77,7 @@ function fetchProductsWithFilter() {
   return fetchAllProducts()
     .then((products) => {
       return products
+        .sort(getSortingFunction())
         .filter((product) =>
           selectedBrand ? product.brand === selectedBrand : true
         )
@@ -74,7 +85,7 @@ function fetchProductsWithFilter() {
           selectedType ? product.product_type === selectedType : true
         )
         .filter((product) =>
-          productName ? product.name.includes(productName) : true
+          productName ? product.name.toLowerCase().includes(productName) : true
         )
         .slice(0, 25);
     })
@@ -83,6 +94,29 @@ function fetchProductsWithFilter() {
       console.error(error);
       return Promise.reject(error);
     });
+}
+
+function getSortingFunction() {
+  let sortingFunction;
+  switch (selectedSort) {
+    case "rating":
+      sortingFunction = ratingSorting;
+      break;
+    case "lowest-price":
+      sortingFunction = lowestPriceSorting;
+      break;
+    case "highest-price":
+      sortingFunction = highestPriceSorting;
+      break;
+    case "a-z":
+      sortingFunction = aToZSorting;
+      break;
+    case "z-a":
+      sortingFunction = zToASorting;
+      break;
+  }
+
+  return sortingFunction;
 }
 
 function getProductItem(product) {
@@ -133,3 +167,16 @@ function getProductDetails(brand, price, category, rating, product_type) {
 }
 
 const convertToBrl = (amount) => amount * 5.5;
+const aToZSorting = (a, b) => {
+  const aName = a.name.toLowerCase();
+  const bName = b.name.toLowerCase();
+  return aName === bName ? 0 : bName > aName ? -1 : 1;
+};
+const zToASorting = (a, b) => {
+  const aName = a.name.toLowerCase();
+  const bName = b.name.toLowerCase();
+  return aName === bName ? 0 : aName > bName ? -1 : 1;
+};
+const ratingSorting = (a, b) => (b.rating || 0) - (a.rating || 0);
+const lowestPriceSorting = (a, b) => a.price - b.price;
+const highestPriceSorting = (a, b) => b.price - a.price;
