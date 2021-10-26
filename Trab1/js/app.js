@@ -1,41 +1,82 @@
-function renderProducts() {
-  fetchProducts().then((data) => {
-    console.log("Produtos carregados!");
-    productsData = data;
-    // console.log(data);
+var productName;
+var selectedBrand;
+var selectedType;
 
+function setProductName(value) {
+  productName = value;
+}
+
+function setSelectedOption(option, value) {
+  switch (option) {
+    case "brand":
+      selectedBrand = value;
+      return;
+    case "type":
+      selectedType = value;
+      return;
+  }
+}
+
+function initializeAllFilters() {
+  fetchAllProducts().then((data) => {
     // Populate brand options
     const brandOption = document.getElementById("filter-brand");
-    data
-      .map((product) => product.brand)
-      .filter((brand) => brand)
-      .forEach((brand) => {
-        brandOption.innerHTML += `<option value="${brand}">${brand}</option>`;
-      });
+    const brandSet = new Set(
+      data.map((product) => product.brand).filter((brand) => brand)
+    );
+    brandSet.forEach((brand) => {
+      brandOption.innerHTML += `<option value="${brand}">${brand}</option>`;
+    });
 
     // Populate type options
     const typeOption = document.getElementById("filter-type");
-    data
-      .map((product) => product.product_type)
-      .filter((type) => type)
-      .forEach((type) => {
-        typeOption.innerHTML += `<option value="${type}">${type}</option>`;
-      });
+    const typeSet = new Set(
+      data.map((product) => product.product_type).filter((type) => type)
+    );
+    typeSet.forEach((type) => {
+      typeOption.innerHTML += `<option value="${type}">${type}</option>`;
+    });
+  });
+}
 
+function renderProducts() {
+  fetchProductsWithFilter().then((data) => {
+    productsData = data;
     // Populate catalog products
     const catalog = document.getElementById("catalog");
+    catalog.innerHTML = "";
     data.forEach((product) => {
       catalog.innerHTML += getProductItem(product);
     });
   });
 }
 
-function fetchProducts() {
-  return fetch("http://makeup-api.herokuapp.com/api/v1/products.json", {
-    method: "GET",
-  })
+function fetchAllProducts() {
+  return fetch("data/products.json")
     .then((response) => {
-      return response.json().then((data) => Promise.resolve([data[0]]));
+      return response.json().then((data) => Promise.resolve(data));
+    })
+    .catch((error) => {
+      console.error("ERRO!!!");
+      console.error(error);
+      return Promise.reject(error);
+    });
+}
+
+function fetchProductsWithFilter() {
+  return fetchAllProducts()
+    .then((products) => {
+      return products
+        .filter((product) =>
+          selectedBrand ? product.brand === selectedBrand : true
+        )
+        .filter((product) =>
+          selectedType ? product.product_type === selectedType : true
+        )
+        .filter((product) =>
+          productName ? product.name.includes(productName) : true
+        )
+        .slice(0, 25);
     })
     .catch((error) => {
       console.error("ERRO!!!");
@@ -92,5 +133,3 @@ function getProductDetails(brand, price, category, rating, product_type) {
 }
 
 const convertToBrl = (amount) => amount * 5.5;
-
-renderProducts();

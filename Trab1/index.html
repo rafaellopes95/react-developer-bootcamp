@@ -7,7 +7,7 @@
     <title>Make Up Catalog</title>
     <link rel="stylesheet" href="css/style.css" />
   </head>
-  <body>
+  <body onload="initializeAllFilters()">
     <header>
       <h1>Make Up Catalog</h1>
     </header>
@@ -15,17 +15,27 @@
       <form class="catalog-control">
         <div class="form-control">
           <label for="filter-name">Nome:</label>
-          <input type="text" id="filter-name" />
+          <input
+            type="text"
+            id="filter-name"
+            oninput="setProductName(this.value)"
+          />
         </div>
         <div class="form-control">
           <label for="filter-brand">Marca:</label>
-          <select id="filter-brand">
+          <select
+            id="filter-brand"
+            onchange="setSelectedOption('brand', this.value)"
+          >
             <option value="">Todos</option>
           </select>
         </div>
         <div class="form-control">
           <label for="filter-type">Tipo:</label>
-          <select id="filter-type">
+          <select
+            id="filter-type"
+            onchange="setSelectedOption('type', this.value)"
+          >
             <option value="">Todos</option>
           </select>
         </div>
@@ -39,6 +49,7 @@
             <option>Z-A</option>
           </select>
         </div>
+        <button type="button" onclick="renderProducts()">Buscar</button>
       </form>
       <section class="catalog" id="catalog"></section>
     </main>
