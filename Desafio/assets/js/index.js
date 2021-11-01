@@ -7,9 +7,9 @@ const distribuicaoNovosCasosChart = document.getElementById("pizza");
 const top10MortesPorPaisChart = document.getElementById("barras");
 const intFormat = new Intl.NumberFormat("pt-br", { maximumFractionDigits: 0 });
 
-let globalTotalConfirmed;
-let globalTotalDeaths;
-let globalTotalRecovered;
+let globalNewConfirmed;
+let globalNewDeaths;
+let globalNewRecovered;
 
 let summary = {};
 let countries = [];
@@ -23,17 +23,24 @@ async function getSummary() {
 
 async function load() {
   await getSummary();
+  console.log(summary);
   renderKPIs();
 }
 
 async function renderKPIs() {
-  globalTotalConfirmed = Number.parseInt(summary["Global"]["TotalConfirmed"]);
-  globalTotalDeaths = Number.parseInt(summary["Global"]["TotalDeaths"]);
-  globalTotalRecovered = Number.parseInt(summary["Global"]["TotalRecovered"]);
+  globalNewConfirmed = Number.parseInt(summary["Global"]["NewConfirmed"]);
+  globalNewDeaths = Number.parseInt(summary["Global"]["NewDeaths"]);
+  globalNewRecovered = Number.parseInt(summary["Global"]["NewRecovered"]);
 
-  totalConfirmados.innerHTML = getFormattedInt(globalTotalConfirmed);
-  totalMortes.innerHTML = getFormattedInt(globalTotalDeaths);
-  totalRecuperados.innerHTML = getFormattedInt(globalTotalRecovered);
+  totalConfirmados.innerHTML = getFormattedInt(
+    Number.parseInt(summary["Global"]["TotalConfirmed"])
+  );
+  totalMortes.innerHTML = getFormattedInt(
+    Number.parseInt(summary["Global"]["TotalDeaths"])
+  );
+  totalRecuperados.innerHTML = getFormattedInt(
+    Number.parseInt(summary["Global"]["TotalRecovered"])
+  );
   dataDeAtualizacao.innerHTML += dateFns.format(
     summary["Global"]["Date"],
     "DD.MM.YY HH:mm"
@@ -44,9 +51,9 @@ async function renderKPIs() {
 
 async function renderKPIsChart() {
   const caseSum = _.sum([
-    globalTotalConfirmed,
-    globalTotalDeaths,
-    globalTotalRecovered,
+    globalNewConfirmed,
+    globalNewDeaths,
+    globalNewRecovered,
   ]);
   new Chart(distribuicaoNovosCasosChart, {
     type: "pie",
@@ -55,9 +62,9 @@ async function renderKPIsChart() {
       datasets: [
         {
           data: [
-            getPercentage(caseSum, globalTotalConfirmed),
-            getPercentage(caseSum, globalTotalRecovered),
-            getPercentage(caseSum, globalTotalDeaths),
+            getPercentage(caseSum, globalNewConfirmed),
+            getPercentage(caseSum, globalNewRecovered),
+            getPercentage(caseSum, globalNewDeaths),
           ],
           backgroundColor: [
             "rgb(51, 153, 255)",
