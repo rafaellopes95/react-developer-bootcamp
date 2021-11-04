@@ -12,6 +12,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/date-fns/1.30.1/date_fns.min.js"></script>
+
     <link
       rel="stylesheet"
       type="text/css"
@@ -19,7 +21,7 @@
     />
   </head>
 
-  <body class="keen-dashboard">
+  <body class="keen-dashboard" onload="load()">
     <div class="container">
       <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="navbar-collapse">
@@ -45,6 +47,8 @@
                 name="date_start"
                 id="date_start"
                 min="2020-01-01"
+                value="2021-05-01"
+                oninput="setSelectedOption('dateFrom', this.value)"
               />
               <h3>Data fim</h3>
               <input
@@ -53,18 +57,22 @@
                 name="date_end"
                 id="date_end"
                 min="2020-01-01"
+                value="2021-05-26"
+                oninput="setSelectedOption('dateTo', this.value)"
               />
               <h3>País</h3>
               <select
                 style="font-size: 20px"
                 class="custom-select"
                 id="cmbCountry"
+                onchange="setSelectedOption('country', this.value)"
               ></select>
               <h3>Dados</h3>
               <select
                 style="font-size: 20px"
                 class="custom-select"
                 id="cmbData"
+                onchange="setSelectedOption('dataType', this.value)"
               >
                 <option value="Confirmed">Casos Confirmados</option>
                 <option value="Deaths" selected>Número de Óbitos</option>
@@ -72,7 +80,12 @@
               </select>
               <div></div>
               <div class="btn">
-                <button style="font-size: 20px" type="submit" id="filtro">
+                <button
+                  style="font-size: 20px"
+                  type="submit"
+                  id="filtro"
+                  onclick="getCountry()"
+                >
                   Aplicar
                 </button>
               </div>
@@ -116,6 +129,6 @@
     </div>
 
     <!-- Project Analytics -->
-    <script src="/assets/js/country.js"></script>
+    <script src="assets/js/country.js"></script>
   </body>
 </html>
