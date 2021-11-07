@@ -1,6 +1,5 @@
 // Destructuring do props: já assinala os atributos do objeto props em variáveis
 export default function Header({ children, size }) {
-  console.log(size);
   let fontSize = "text-xl";
 
   if (size === "large") {
