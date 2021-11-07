@@ -3,6 +3,7 @@ import DateInput from "./components/DateInput";
 import Header from "./components/Header";
 import Main from "./components/Main";
 import TextInput from "./components/TextInput";
+import getAgeFrom from "./helpers/dateHelpers";
 
 export default function App() {
   // Hook para estado
@@ -34,8 +35,8 @@ export default function App() {
           onInputChange={handleBirthDateChange}
         />
         <p>
-          O seu nome é {name}, com {name.length} caracteres, e você possui 20
-          anos.
+          O seu nome é {name}, com {name.length} caracteres, e você possui{" "}
+          {getAgeFrom(birthDate)} anos.
         </p>
       </Main>
     </>
