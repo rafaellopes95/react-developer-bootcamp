@@ -33,7 +33,7 @@ We suggest that you begin by typing:
 cd ambiente
 yarn start
 
-## App react-app
+## App react-hello
 
 - Utilizando o projeto base do professor com dependências e configurações iniciais prontas para as aulas.
 - Além das dependências de React em si, por conta da utilização do Tailwind (CSS) a dependência craco também se faz necessária para devida utilização com o React.
