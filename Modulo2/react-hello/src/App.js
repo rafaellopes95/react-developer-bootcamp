@@ -1,22 +1,18 @@
+import Header from "./components/Header";
+import Main from "./components/Main";
+
 export default function App() {
   console.log("Teste no console do navegador");
 
   return (
     // Fragment, pode ser utilizado como uma div quando não há necessidade de estilização por exemplo.
     <>
-      <header>
-        <div className="bg-gray-100 mx-auto p-4">
-          <h1 className="text-center font-semibold text-xl">
-            Projeto base para o Módulo React I
-          </h1>
-        </div>
-      </header>
-
-      <main>
+      <Header size="large">react-hello</Header>
+      <Main>
         <div className="container mx-auto p-4">
-          <h2>O conteúdo fica aqui.</h2>
+          <p>O seu nome é Rafael, com 6 caracteres, e você possui 20 anos.</p>
         </div>
-      </main>
+      </Main>
     </>
   );
 }
