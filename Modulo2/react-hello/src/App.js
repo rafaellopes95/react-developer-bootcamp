@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Main from "./components/Main";
 import TextInput from "./components/TextInput";
 import getAgeFrom from "./helpers/dateHelpers";
+import { getNewId } from "./services/idService";
 
 export default function App() {
   // Hook para estado
@@ -25,11 +26,15 @@ export default function App() {
       <Header size="large">react-hello</Header>
       <Main>
         <TextInput
+          id={getNewId()}
           labelDescription="Digite o seu nome:"
           inputValue={name}
           onInputChange={handleNameChange}
+          // esta prop é do tipo boolean, que quando passada é true, e que quando omitida é false
+          autoFocus
         />
         <DateInput
+          id={getNewId()}
           labelDescription="Digite a sua data de nascimento:"
           inputValue={birthDate}
           onInputChange={handleBirthDateChange}
