@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DateInput from "./components/DateInput";
 import Header from "./components/Header";
 import Main from "./components/Main";
@@ -10,6 +10,14 @@ export default function App() {
   // Hook para estado
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState("2000-01-10");
+
+  // Side effect, usado para sincronizar o estado mundo real com o estado da aplicação. Exemplo: retorno de dados do backend.
+  // O useEffect executará sempre ao final da renderização, e sempre quando ele detectar alterações em algum item do seu array de dependências (neste caso, [name])
+  // Caso o array de deps não seja declarado, o effect executará sempre que houver alguma alteração na app (pode sobrecarregar a app fazendo operações desnecessárias)
+  // Caso o array de deps seja vazio, o effect executará apenas uma vez - não costuma ser boa prática
+  useEffect(() => {
+    document.title = name;
+  }, [name]);
 
   // Closure para alterar o estado
   function handleNameChange(newName) {
