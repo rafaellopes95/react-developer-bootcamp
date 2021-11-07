@@ -3,6 +3,7 @@ import CheckboxInput from "./components/CheckboxInput";
 import DateInput from "./components/DateInput";
 import Header from "./components/Header";
 import Main from "./components/Main";
+import OnlineOffline from "./components/OnlineOffline";
 import TextInput from "./components/TextInput";
 import Timer from "./components/Timer";
 import getAgeFrom from "./helpers/dateHelpers";
@@ -13,6 +14,7 @@ export default function App() {
   const [name, setName] = useState("");
   const [birthDate, setBirthDate] = useState("2000-01-10");
   const [showTimer, setShowTimer] = useState(false);
+  const [isOnline, setIsOnline] = useState(true);
 
   // Side effect, usado para sincronizar o estado mundo real com o estado da aplicação. Exemplo: retorno de dados do backend.
   // O useEffect executará sempre ao final da renderização, e sempre quando ele detectar alterações em algum item do seu array de dependências (neste caso, [name])
@@ -21,6 +23,24 @@ export default function App() {
   useEffect(() => {
     document.title = name;
   }, [name]);
+
+  useEffect(() => {
+    function toggleOnline() {
+      setIsOnline(true);
+    }
+
+    function toggleOffline() {
+      setIsOnline(false);
+    }
+
+    window.addEventListener("online", toggleOnline);
+    window.addEventListener("offline", toggleOffline);
+
+    return () => {
+      window.removeEventListener("online", toggleOnline);
+      window.removeEventListener("offline", toggleOffline);
+    };
+  });
 
   // Closure para alterar o estado
   function handleNameChange(newName) {
@@ -40,6 +60,8 @@ export default function App() {
     <>
       <Header size="large">react-hello</Header>
       <Main>
+        <OnlineOffline isOnline={isOnline} />
+
         {showTimer && (
           <div className="text-right mt-1">
             <Timer />
