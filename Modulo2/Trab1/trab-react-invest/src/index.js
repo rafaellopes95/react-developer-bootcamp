@@ -5,26 +5,26 @@
  * é necessária neste arquivo pois "React" é de fato
  * utilizado com StrictMode
  */
-import React from 'react';
+import React from "react";
 
 /**
  * Este é o módulo do React que renderiza HTML.
  * Em mobile temos, por exemplo, o react-native
  */
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 
 /**
  * Importação do componente principal
  * da aplicação
  */
-import App from './App';
+import App from "./App";
 
 /**
  * Este arquivo pode ser considerado o CSS
  * Global do App. Perceba a peculiaridade da
  * sintaxe de importação
  */
-import './index.css';
+import "./index.css";
 
 /**
  * <React.StrictMode> é utilizado na fase
@@ -37,5 +37,5 @@ ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
