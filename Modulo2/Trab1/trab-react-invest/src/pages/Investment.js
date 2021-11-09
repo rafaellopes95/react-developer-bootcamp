@@ -1,9 +1,13 @@
 export default function Investment({ investment = null, reports = [] }) {
+  const numberFormatter = new Intl.NumberFormat("pt-br", {
+    maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
+  });
   function calculateResult(report) {
     return {
       date: `${report.month} / ${report.year}`,
-      value: report.value,
-      percent: getDifferenceToPreviousMonth(report),
+      value: numberFormatter.format(report.value),
+      percent: numberFormatter.format(getDifferenceToPreviousMonth(report)),
     };
   }
 
@@ -11,17 +15,36 @@ export default function Investment({ investment = null, reports = [] }) {
     if (report.month === 1) {
       return 0.0;
     } else {
-      const currentMonthValue = report.value;
-      const previousMonthValue = reports[report.month - 2].value;
-      return (
-        ((currentMonthValue - previousMonthValue) / previousMonthValue) * 100
+      const currentMonthValue = Number.parseFloat(report.value);
+      const previousMonthValue = Number.parseFloat(
+        reports[report.month - 2].value
       );
+      return calculatePercentage(previousMonthValue, currentMonthValue);
     }
+  }
+
+  function calculatePercentage(a, b) {
+    return ((b - a) / a) * 100.0;
   }
 
   return (
     <div>
-      <p>{investment.id}</p>
+      <h3>{investment.description}</h3>
+      <h4>
+        Rendimento total:{" "}
+        {numberFormatter.format(
+          Number.parseFloat(reports[reports.length - 1].value) -
+            Number.parseFloat(reports[0].value)
+        )}
+        {" ("}
+        {numberFormatter.format(
+          calculatePercentage(
+            Number.parseFloat(reports[0].value),
+            Number.parseFloat(reports[reports.length - 1].value)
+          )
+        )}
+        {"%)"}
+      </h4>
       <table className="table border border-blue-500">
         <tr className="border border-blue-500">
           <th className="border border-blue-500 px-1">Mês / Ano</th>
@@ -33,8 +56,10 @@ export default function Investment({ investment = null, reports = [] }) {
           return (
             <tr>
               <td className="border border-blue-500 px-1">{data.date}</td>
-              <td className="border border-blue-500 px-1">{data.value}</td>
-              <td className="border border-blue-500 px-1">{data.percent}</td>
+              <td className="border border-blue-500 px-1 text-right">
+                {data.value}
+              </td>
+              <td className="border border-blue-500 px-1 text-right">{`${data.percent}%`}</td>
             </tr>
           );
         })}

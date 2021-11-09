@@ -11,8 +11,6 @@ export default function Investments() {
       .sort((a, b) => a.month - b.month);
   }
 
-  // console.log(getReportsByInvestmentId("3176856a-82cf-4ce9-8803-c65107c7ad5e"));
-
   return (
     <div>
       {investments.map((investment) => {
