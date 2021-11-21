@@ -61,8 +61,14 @@ const useStyles = makeStyles({
 export function CalendarScreen() {
   const classes = useStyles();
   const [calendars, setCalendars] = useState<ICalendar[]>([]);
+  const [calendarsSelected, setCalendarsSelected] = useState<boolean[]>([]);
   const [events, setEvents] = useState<IEvent[]>([]);
-  const weeks = generateCalendar(getToday(), events, calendars);
+  const weeks = generateCalendar(
+    getToday(),
+    events,
+    calendars,
+    calendarsSelected
+  );
   const firstDate = weeks[0][0].date;
   const lastDate = weeks[weeks.length - 1][6].date;
 
@@ -72,10 +78,17 @@ export function CalendarScreen() {
       getCalendarsEndpoint(),
       getEventsEndpoint(firstDate, lastDate),
     ]).then(([calendars, events]) => {
+      setCalendarsSelected(calendars.map((calendar) => true));
       setCalendars(calendars);
       setEvents(events);
     });
   }, [firstDate, lastDate]);
+
+  function toggleCalendar(i: number) {
+    const newValue = [...calendarsSelected];
+    newValue[i] = !newValue[i];
+    setCalendarsSelected(newValue);
+  }
 
   return (
     <Box display="flex" height="100%" alignItems="stretch">
@@ -91,8 +104,19 @@ export function CalendarScreen() {
 
         <Box marginTop="64px">
           <h3>Agendas</h3>
-          <FormControlLabel control={<Checkbox />} label="Pessoal" />
-          <FormControlLabel control={<Checkbox />} label="Trabalho" />
+          {calendars.map((calendar, index) => (
+            <FormControlLabel
+              key={calendar.id}
+              control={
+                <Checkbox
+                  checked={calendarsSelected[index]}
+                  style={{ color: calendar.color }}
+                  onChange={() => toggleCalendar(index)}
+                />
+              }
+              label={calendar.name}
+            />
+          ))}
         </Box>
       </Box>
       <TableContainer component={"div"}>
@@ -171,16 +195,20 @@ export function CalendarScreen() {
   );
 }
 
+// Criando uma versão diferente da interface já existente, agregando um atributo novo.
+type IEventWithCalendar = IEvent & { calendar: ICalendar };
+
 interface ICalendarCell {
   date: string;
   dayOfMonth: number;
-  events: (IEvent & { calendar: ICalendar })[];
+  events: IEventWithCalendar[];
 }
 
 function generateCalendar(
   date: string,
   allEvents: IEvent[],
-  calendars: ICalendar[]
+  calendars: ICalendar[],
+  calendarsSelected: boolean[]
 ): ICalendarCell[][] {
   const weeks: ICalendarCell[][] = [];
   const jsDate = new Date(date + "T12:00:00");
@@ -198,17 +226,23 @@ function generateCalendar(
       const monthStr = (currentDay.getMonth() + 1).toString().padStart(2, "0");
       const dayStr = currentDay.getDate().toString().padStart(2, "0");
       const isoDate = `${currentDay.getFullYear()}-${monthStr}-${dayStr}`;
+
+      const events: IEventWithCalendar[] = [];
+      for (const event of allEvents) {
+        if (event.date === isoDate) {
+          const calIndex = calendars.findIndex(
+            (calendar) => calendar.id === event.calendarId
+          );
+          if (calendarsSelected[calIndex]) {
+            events.push({ ...event, calendar: calendars[calIndex] });
+          }
+        }
+      }
+
       week.push({
         date: isoDate,
         dayOfMonth: currentDay.getDate(),
-        events: allEvents
-          .filter((event) => event.date === isoDate)
-          .map((event) => {
-            const calendar = calendars.find(
-              (calendar) => calendar.id === event.calendarId
-            )!;
-            return { ...event, calendar };
-          }),
+        events,
       });
       currentDay.setDate(currentDay.getDate() + 1);
     }
