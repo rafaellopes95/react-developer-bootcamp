@@ -12,7 +12,12 @@ import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import Icon from "@mui/material/Icon";
 import Avatar from "@mui/material/Avatar";
-import { getEventsEndpoint, IEvent } from "./backend";
+import {
+  getCalendarsEndpoint,
+  getEventsEndpoint,
+  ICalendar,
+  IEvent,
+} from "./backend";
 import { useState, useEffect } from "react";
 
 const DAYS_OF_WEEK = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
@@ -45,18 +50,31 @@ const useStyles = makeStyles({
     whiteSpace: "nowrap",
     margin: "4px 0",
   },
+  eventBackground: {
+    display: "inline-block",
+    color: "white",
+    padding: "2px 4px",
+    borderRadius: "4px",
+  },
 });
 
 export function CalendarScreen() {
   const classes = useStyles();
+  const [calendars, setCalendars] = useState<ICalendar[]>([]);
   const [events, setEvents] = useState<IEvent[]>([]);
-  const weeks = generateCalendar(getToday(), events);
+  const weeks = generateCalendar(getToday(), events, calendars);
   const firstDate = weeks[0][0].date;
   const lastDate = weeks[weeks.length - 1][6].date;
 
   // Quando firstDate e lastDate forem setadas o useEffect chamará o backend e renderizará os componentes novamente
   useEffect(() => {
-    getEventsEndpoint(firstDate, lastDate).then((events) => setEvents(events));
+    Promise.all([
+      getCalendarsEndpoint(),
+      getEventsEndpoint(firstDate, lastDate),
+    ]).then(([calendars, events]) => {
+      setCalendars(calendars);
+      setEvents(events);
+    });
   }, [firstDate, lastDate]);
 
   return (
@@ -113,19 +131,35 @@ export function CalendarScreen() {
                   <TableCell key={cell.date} align="center">
                     <div className={classes.dayOfMonth}>{cell.dayOfMonth}</div>
 
-                    {cell.events.map((event) => (
-                      <button className={classes.event}>
-                        {event.time && (
-                          <Icon fontSize="inherit">watch_later</Icon>
-                        )}
-                        {event.time && (
-                          <Box component="span" margin="0 4px">
-                            {event.time}
-                          </Box>
-                        )}
-                        <span>{event.desc}</span>
-                      </button>
-                    ))}
+                    {cell.events.map((event) => {
+                      const color = event.calendar.color;
+                      return (
+                        <>
+                          <button className={classes.event}>
+                            {event.time && (
+                              <>
+                                <Icon style={{ color }} fontSize="inherit">
+                                  watch_later
+                                </Icon>
+                                <Box component="span" margin="0 4px">
+                                  {event.time}
+                                </Box>
+                              </>
+                            )}
+                            {event.time ? (
+                              <span>{event.desc}</span>
+                            ) : (
+                              <span
+                                className={classes.eventBackground}
+                                style={{ backgroundColor: color }}
+                              >
+                                {event.desc}
+                              </span>
+                            )}
+                          </button>
+                        </>
+                      );
+                    })}
                   </TableCell>
                 ))}
               </TableRow>
@@ -140,12 +174,13 @@ export function CalendarScreen() {
 interface ICalendarCell {
   date: string;
   dayOfMonth: number;
-  events: IEvent[];
+  events: (IEvent & { calendar: ICalendar })[];
 }
 
 function generateCalendar(
   date: string,
-  allEvents: IEvent[]
+  allEvents: IEvent[],
+  calendars: ICalendar[]
 ): ICalendarCell[][] {
   const weeks: ICalendarCell[][] = [];
   const jsDate = new Date(date + "T12:00:00");
@@ -166,7 +201,14 @@ function generateCalendar(
       week.push({
         date: isoDate,
         dayOfMonth: currentDay.getDate(),
-        events: allEvents.filter((event) => event.date === isoDate),
+        events: allEvents
+          .filter((event) => event.date === isoDate)
+          .map((event) => {
+            const calendar = calendars.find(
+              (calendar) => calendar.id === event.calendarId
+            )!;
+            return { ...event, calendar };
+          }),
       });
       currentDay.setDate(currentDay.getDate() + 1);
     }
