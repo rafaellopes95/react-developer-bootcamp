@@ -19,7 +19,9 @@ import {
   IEvent,
 } from "./backend";
 import { useState, useEffect } from "react";
-import { getToday } from "./dateFunctions";
+import { addMonths, formatMonth } from "./dateFunctions";
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 
 const DAYS_OF_WEEK = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
 
@@ -60,12 +62,14 @@ const useStyles = makeStyles({
 });
 
 export function CalendarScreen() {
+  // Pegando o parâmetro de URL month usando o hook useParams
+  const { month } = useParams();
   const classes = useStyles();
   const [calendars, setCalendars] = useState<ICalendar[]>([]);
   const [calendarsSelected, setCalendarsSelected] = useState<boolean[]>([]);
   const [events, setEvents] = useState<IEvent[]>([]);
   const weeks = generateCalendar(
-    getToday(),
+    month + "-01",
     events,
     calendars,
     calendarsSelected
@@ -125,15 +129,23 @@ export function CalendarScreen() {
       <Box flex="1" display="flex" flexDirection="column">
         <Box display="flex" alignItems="center" padding="8px 16px">
           <Box>
-            <IconButton aria-label="Mês anterior">
+            <IconButton
+              aria-label="Mês anterior"
+              component={Link}
+              to={"/calendar/" + addMonths(month!, -1)}
+            >
               <Icon>chevron_left</Icon>
             </IconButton>
-            <IconButton aria-label="Próximo mês">
+            <IconButton
+              aria-label="Próximo mês"
+              component={Link}
+              to={"/calendar/" + addMonths(month!, 1)}
+            >
               <Icon>chevron_right</Icon>
             </IconButton>
           </Box>
           <Box flex="1" marginLeft="16px" component="h3">
-            Junho de 2021
+            {formatMonth(month!)}
           </Box>
           <IconButton aria-label="Usuário">
             <Avatar>
@@ -165,7 +177,7 @@ export function CalendarScreen() {
                       {cell.events.map((event) => {
                         const color = event.calendar.color;
                         return (
-                          <>
+                          <div key={event.id}>
                             <button className={classes.event}>
                               {event.time && (
                                 <>
@@ -188,7 +200,7 @@ export function CalendarScreen() {
                                 </span>
                               )}
                             </button>
-                          </>
+                          </div>
                         );
                       })}
                     </TableCell>
