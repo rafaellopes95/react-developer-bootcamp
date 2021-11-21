@@ -19,6 +19,7 @@ import {
   IEvent,
 } from "./backend";
 import { useState, useEffect } from "react";
+import { getToday } from "./dateFunctions";
 
 const DAYS_OF_WEEK = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
 
@@ -257,8 +258,4 @@ function generateCalendar(
   } while (currentDay.getMonth() === currentMonth);
 
   return weeks;
-}
-
-function getToday(): string {
-  return "2021-06-17";
 }
