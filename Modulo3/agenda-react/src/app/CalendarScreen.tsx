@@ -105,21 +105,23 @@ export function CalendarScreen() {
         <Box marginTop="64px">
           <h3>Agendas</h3>
           {calendars.map((calendar, index) => (
-            <FormControlLabel
-              key={calendar.id}
-              control={
-                <Checkbox
-                  checked={calendarsSelected[index]}
-                  style={{ color: calendar.color }}
-                  onChange={() => toggleCalendar(index)}
-                />
-              }
-              label={calendar.name}
-            />
+            <div key={calendar.id}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={calendarsSelected[index]}
+                    style={{ color: calendar.color }}
+                    onChange={() => toggleCalendar(index)}
+                  />
+                }
+                label={calendar.name}
+              />
+            </div>
           ))}
         </Box>
       </Box>
-      <TableContainer component={"div"}>
+
+      <Box flex="1" display="flex" flexDirection="column">
         <Box display="flex" alignItems="center" padding="8px 16px">
           <Box>
             <IconButton aria-label="Mês anterior">
@@ -138,59 +140,64 @@ export function CalendarScreen() {
             </Avatar>
           </IconButton>
         </Box>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              {DAYS_OF_WEEK.map((day) => (
-                <TableCell key={day} align="center">
-                  {day}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {weeks.map((week, index) => (
-              <TableRow key={index}>
-                {week.map((cell) => (
-                  <TableCell key={cell.date} align="center">
-                    <div className={classes.dayOfMonth}>{cell.dayOfMonth}</div>
 
-                    {cell.events.map((event) => {
-                      const color = event.calendar.color;
-                      return (
-                        <>
-                          <button className={classes.event}>
-                            {event.time && (
-                              <>
-                                <Icon style={{ color }} fontSize="inherit">
-                                  watch_later
-                                </Icon>
-                                <Box component="span" margin="0 4px">
-                                  {event.time}
-                                </Box>
-                              </>
-                            )}
-                            {event.time ? (
-                              <span>{event.desc}</span>
-                            ) : (
-                              <span
-                                className={classes.eventBackground}
-                                style={{ backgroundColor: color }}
-                              >
-                                {event.desc}
-                              </span>
-                            )}
-                          </button>
-                        </>
-                      );
-                    })}
+        <TableContainer style={{ flex: "1" }} component={"div"}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                {DAYS_OF_WEEK.map((day) => (
+                  <TableCell key={day} align="center">
+                    {day}
                   </TableCell>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {weeks.map((week, index) => (
+                <TableRow key={index}>
+                  {week.map((cell) => (
+                    <TableCell key={cell.date} align="center">
+                      <div className={classes.dayOfMonth}>
+                        {cell.dayOfMonth}
+                      </div>
+
+                      {cell.events.map((event) => {
+                        const color = event.calendar.color;
+                        return (
+                          <>
+                            <button className={classes.event}>
+                              {event.time && (
+                                <>
+                                  <Icon style={{ color }} fontSize="inherit">
+                                    watch_later
+                                  </Icon>
+                                  <Box component="span" margin="0 4px">
+                                    {event.time}
+                                  </Box>
+                                </>
+                              )}
+                              {event.time ? (
+                                <span>{event.desc}</span>
+                              ) : (
+                                <span
+                                  className={classes.eventBackground}
+                                  style={{ backgroundColor: color }}
+                                >
+                                  {event.desc}
+                                </span>
+                              )}
+                            </button>
+                          </>
+                        );
+                      })}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
     </Box>
   );
 }
