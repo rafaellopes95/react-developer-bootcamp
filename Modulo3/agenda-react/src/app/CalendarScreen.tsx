@@ -11,6 +11,7 @@ import { useParams } from "react-router";
 import { CalendarsView } from "./CalendarsView";
 import { CalendarHeader } from "./CalendarHeader";
 import { Calendar, ICalendarCell, IEventWithCalendar } from "./Calendar";
+import { EventFormDialog } from "./EventFormDialog";
 
 export function CalendarScreen() {
   // Pegando o parâmetro de URL month usando o hook useParams
@@ -18,6 +19,7 @@ export function CalendarScreen() {
   const [calendars, setCalendars] = useState<ICalendar[]>([]);
   const [calendarsSelected, setCalendarsSelected] = useState<boolean[]>([]);
   const [events, setEvents] = useState<IEvent[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
   const weeks = generateCalendar(
     month + "-01",
     events,
@@ -53,7 +55,11 @@ export function CalendarScreen() {
         padding="8px 16px"
       >
         <h2>Agenda React</h2>
-        <Button variant="contained" color="primary">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setOpen(true)}
+        >
           Novo evento
         </Button>
 
@@ -67,6 +73,7 @@ export function CalendarScreen() {
       <Box flex="1" display="flex" flexDirection="column">
         <CalendarHeader month={month!} />
         <Calendar weeks={weeks} />
+        <EventFormDialog open={open} onClose={() => setOpen(false)} />
       </Box>
     </Box>
   );
