@@ -11,9 +11,19 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { ICalendar } from "./backend";
+
+export interface IEditingEvent {
+  id?: number;
+  date: string;
+  time?: string;
+  desc: string;
+  calendarId: number;
+}
 
 interface IEventFormDialogProps {
-  open: boolean;
+  event: IEditingEvent | null;
+  calendars: ICalendar[];
   onClose: () => void;
 }
 
@@ -28,20 +38,47 @@ export function EventFormDialog(props: IEventFormDialogProps) {
     setOpen(false);
   };
 
+  const { event, calendars } = props;
+
   return (
-    <Dialog onClose={props.onClose} open={props.open}>
+    <Dialog onClose={props.onClose} open={!!event}>
       <DialogTitle>Criar evento</DialogTitle>
       <DialogContent>
-        <TextField type="date" margin="normal" label="Data" fullWidth />
-        <TextField autoFocus margin="normal" label="Descrição" fullWidth />
-        <TextField type="time" margin="normal" label="Hora" fullWidth />
-        <FormControl margin="normal" fullWidth>
-          <InputLabel id="select-calendar">Agenda</InputLabel>
-          <Select labelId="select-calendar">
-            <MenuItem value={1}>Pessoal</MenuItem>
-            <MenuItem value={2}>Trabalho</MenuItem>
-          </Select>
-        </FormControl>
+        {event && (
+          <>
+            <TextField
+              type="date"
+              margin="normal"
+              label="Data"
+              fullWidth
+              value={event.date}
+            />
+            <TextField
+              autoFocus
+              margin="normal"
+              label="Descrição"
+              fullWidth
+              value={event.desc}
+            />
+            <TextField
+              type="time"
+              margin="normal"
+              label="Hora"
+              fullWidth
+              value={event.time}
+            />
+            <FormControl margin="normal" fullWidth>
+              <InputLabel id="select-calendar">Agenda</InputLabel>
+              <Select labelId="select-calendar" value={event.calendarId}>
+                {calendars.map((calendar) => (
+                  <MenuItem key={calendar.id} value={calendar.id}>
+                    {calendar.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={props.onClose} color="secondary">
