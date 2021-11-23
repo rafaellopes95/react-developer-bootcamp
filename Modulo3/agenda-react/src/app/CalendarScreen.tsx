@@ -53,9 +53,9 @@ export function CalendarScreen() {
     setCalendarsSelected(newValue);
   }
 
-  function openNewEvent() {
+  function openNewEvent(date: string) {
     setEditingEvent({
-      date: getToday(),
+      date,
       desc: "",
       calendarId: calendars[0].id,
     });
@@ -72,7 +72,7 @@ export function CalendarScreen() {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => openNewEvent()}
+          onClick={() => openNewEvent(getToday())}
         >
           Novo evento
         </Button>
@@ -86,7 +86,11 @@ export function CalendarScreen() {
 
       <Box flex="1" display="flex" flexDirection="column">
         <CalendarHeader month={month!} />
-        <Calendar weeks={weeks} />
+        <Calendar
+          weeks={weeks}
+          onClickDay={openNewEvent}
+          onClickEvent={setEditingEvent}
+        />
         <EventFormDialog
           event={editingEvent}
           calendars={calendars}

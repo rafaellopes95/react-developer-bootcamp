@@ -3,6 +3,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
 import { useState, useEffect, useRef } from "react";
 import {
+  Box,
   DialogActions,
   DialogContent,
   FormControl,
@@ -11,7 +12,13 @@ import {
   Select,
   TextField,
 } from "@mui/material";
-import { createEventEndpoint, ICalendar, IEditingEvent } from "./backend";
+import {
+  createEventEndpoint,
+  deleteEventEndpoint,
+  ICalendar,
+  IEditingEvent,
+  updateEventEndpoint,
+} from "./backend";
 
 interface IEventFormDialogProps {
   event: IEditingEvent | null;
@@ -37,8 +44,9 @@ export function EventFormDialog(props: IEventFormDialogProps) {
   useEffect(() => {
     setEvent(props.event);
     setErrors({});
-    //console.log(event);
   }, [props.event]);
+
+  const isNew = !event?.id;
 
   const { calendars } = props;
 
@@ -64,15 +72,25 @@ export function EventFormDialog(props: IEventFormDialogProps) {
     evt.preventDefault();
     if (event) {
       if (validate()) {
-        createEventEndpoint(event).then(props.onSave);
+        if (isNew) {
+          createEventEndpoint(event).then(props.onSave);
+        } else {
+          updateEventEndpoint(event).then(props.onSave);
+        }
       }
+    }
+  }
+
+  function deleteEvent() {
+    if (event) {
+      deleteEventEndpoint(event.id!).then(props.onSave);
     }
   }
 
   return (
     <Dialog onClose={props.onCancel} open={!!event}>
       <form onSubmit={save}>
-        <DialogTitle>Criar evento</DialogTitle>
+        <DialogTitle>{isNew ? "Criar evento" : "Editar evento"}</DialogTitle>
         <DialogContent>
           {event && (
             <>
@@ -137,6 +155,12 @@ export function EventFormDialog(props: IEventFormDialogProps) {
           )}
         </DialogContent>
         <DialogActions>
+          {!isNew && (
+            <Button type="button" onClick={deleteEvent} color="secondary">
+              Excluir
+            </Button>
+          )}
+          <Box flex="1"></Box>
           <Button type="button" onClick={props.onCancel} color="secondary">
             Cancelar
           </Button>

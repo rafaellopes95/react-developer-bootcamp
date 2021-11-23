@@ -72,34 +72,14 @@
     {
       "id": 10,
       "date": "2021-06-17",
-      "desc": "Teste 2",
-      "calendarId": 1
-    },
-    {
-      "date": "2021-06-18",
-      "desc": "tetete",
+      "desc": "Teste 23",
       "calendarId": 1,
-      "time": "10:25",
-      "id": 11
-    },
-    {
-      "date": "2021-06-20",
-      "desc": "Teste - natação",
-      "calendarId": 1,
-      "time": "11:30",
-      "id": 12
-    },
-    {
-      "date": "2021-06-17",
-      "desc": "",
-      "calendarId": 1,
-      "id": 13
-    },
-    {
-      "date": "2021-06-17",
-      "desc": "",
-      "calendarId": 1,
-      "id": 14
+      "calendar": {
+        "id": 1,
+        "name": "Pessoal",
+        "color": "#8E24AA"
+      },
+      "time": "10:00"
     }
   ]
 }
