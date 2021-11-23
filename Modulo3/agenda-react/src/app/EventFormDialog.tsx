@@ -1,7 +1,7 @@
 import Button from "@mui/material/Button";
 import DialogTitle from "@mui/material/DialogTitle";
 import Dialog from "@mui/material/Dialog";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   DialogActions,
   DialogContent,
@@ -20,23 +20,52 @@ interface IEventFormDialogProps {
   onSave: () => void;
 }
 
+// Um objeto desta interface pode possuir multiplos atributos, desde que a chave e o valor sejam do tipo string
+interface IValidationErrors {
+  [field: string]: string;
+}
+
 export function EventFormDialog(props: IEventFormDialogProps) {
   // Criando um estado local baseado na prop event, pois assim o dialog poderá manipular os dados
   const [event, setEvent] = useState<IEditingEvent | null>(props.event);
+  const [errors, setErrors] = useState<IValidationErrors>({});
+  // O ref é uma forma de manipular o DOM do elemento com o qual está vinculado
+  const inputDate = useRef<HTMLInputElement | null>();
+  const inputDesc = useRef<HTMLInputElement | null>();
 
   // O estado local de event deve ser atualizado através de um effect, senão ele permanecerá nulo para sempre
   useEffect(() => {
     setEvent(props.event);
+    setErrors({});
     //console.log(event);
   }, [props.event]);
 
   const { calendars } = props;
 
+  function validate(): boolean {
+    if (event) {
+      const currentErrors: IValidationErrors = {};
+      if (!event.date) {
+        currentErrors["date"] = "A data deve ser preenchida.";
+        inputDate.current?.focus();
+      }
+      if (!event.desc) {
+        currentErrors["desc"] = "A descrição deve ser preenchida.";
+        inputDesc.current?.focus();
+      }
+      setErrors(currentErrors);
+      return Object.keys(currentErrors).length === 0;
+    }
+    return false;
+  }
+
   function save(evt: React.FormEvent) {
     // Esta linha vai evitar o comportamento padrão do submit que é um método post para o server seguido de um refresh.
     evt.preventDefault();
     if (event) {
-      createEventEndpoint(event).then(props.onSave);
+      if (validate()) {
+        createEventEndpoint(event).then(props.onSave);
+      }
     }
   }
 
@@ -48,6 +77,7 @@ export function EventFormDialog(props: IEventFormDialogProps) {
           {event && (
             <>
               <TextField
+                inputRef={inputDate}
                 type="date"
                 margin="normal"
                 label="Data"
@@ -57,8 +87,11 @@ export function EventFormDialog(props: IEventFormDialogProps) {
                 onChange={(evt) =>
                   setEvent({ ...event, date: evt.target.value })
                 }
+                error={!!errors.date}
+                helperText={errors.date}
               />
               <TextField
+                inputRef={inputDesc}
                 autoFocus
                 margin="normal"
                 label="Descrição"
@@ -67,6 +100,8 @@ export function EventFormDialog(props: IEventFormDialogProps) {
                 onChange={(evt) =>
                   setEvent({ ...event, desc: evt.target.value })
                 }
+                error={!!errors.desc}
+                helperText={errors.desc}
               />
               <TextField
                 type="time"
