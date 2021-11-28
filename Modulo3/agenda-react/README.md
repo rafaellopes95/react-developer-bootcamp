@@ -11,3 +11,7 @@ O backend da aplicação possui os seguintes endpoints:
 ## API Context
 
 - A API context (acessível através do hook useContext) possibilita que qualquer componente na hierarquia envolvida pelo context provider acesse propriedades sem que essa prop precise ser passada abaixo na hierarquia até o componente que irá utilizá-lo.
+
+## Otimização
+
+- useMemo: Este hook permite definir um array de dependências onde somente quando houver alguma alteração neles é que o componente será renderizado novamente, assim evitando renderizações desnecessárias.

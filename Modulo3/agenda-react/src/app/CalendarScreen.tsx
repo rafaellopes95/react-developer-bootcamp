@@ -7,7 +7,7 @@ import {
   IEditingEvent,
   IEvent,
 } from "./backend";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 import { CalendarsView } from "./CalendarsView";
 import { CalendarHeader } from "./CalendarHeader";
@@ -22,12 +22,17 @@ export function CalendarScreen() {
   const [calendarsSelected, setCalendarsSelected] = useState<boolean[]>([]);
   const [events, setEvents] = useState<IEvent[]>([]);
   const [editingEvent, setEditingEvent] = useState<IEditingEvent | null>(null);
-  const weeks = generateCalendar(
-    month + "-01",
-    events,
-    calendars,
-    calendarsSelected
-  );
+
+  // Com o useMemo, o generateCalendar só será chamado quando algum dos estados no array de dependência for alterado - assim reduzindo a quantidade de renderizações do componente
+  const weeks = useMemo(() => {
+    return generateCalendar(
+      month + "-01",
+      events,
+      calendars,
+      calendarsSelected
+    );
+  }, [month, events, calendars, calendarsSelected]);
+
   const firstDate = weeks[0][0].date;
   const lastDate = weeks[weeks.length - 1][6].date;
 
