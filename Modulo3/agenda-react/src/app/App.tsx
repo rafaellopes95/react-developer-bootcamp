@@ -4,6 +4,7 @@ import { getToday } from "./dateFunctions";
 import { useEffect, useState } from "react";
 import { getUserEndpoint, IUser } from "./backend";
 import { LoginScreen } from "./LoginScreen";
+import { userContext } from "./authContext";
 
 function App() {
   const month = getToday().substring(0, 7);
@@ -20,15 +21,18 @@ function App() {
 
   if (user) {
     return (
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/calendar/:month"
-            element={<CalendarScreen user={user} onSignOut={signOut} />}
-          />
-          <Route path="/" element={<Navigate to={"/calendar/" + month} />} />
-        </Routes>
-      </BrowserRouter>
+      // O useContext permite compartilhar props sem que haja necessidade de cascatear uma propriedade até o componente que irá utilizar, pois qualquer componente englobado pelo context pode acessá-lo
+      <userContext.Provider value={user}>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/calendar/:month"
+              element={<CalendarScreen onSignOut={signOut} />}
+            />
+            <Route path="/" element={<Navigate to={"/calendar/" + month} />} />
+          </Routes>
+        </BrowserRouter>
+      </userContext.Provider>
     );
   } else {
     return <LoginScreen onSignIn={setUser} />;
