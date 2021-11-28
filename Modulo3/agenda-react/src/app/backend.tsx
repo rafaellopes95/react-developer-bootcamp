@@ -90,3 +90,10 @@ export function signInEndpoint(
     body: JSON.stringify({ email, password }),
   }).then(handleResponse);
 }
+
+export function signOutEndpoint(): Promise<IUser> {
+  return fetch(`http://localhost:8080/auth/logout`, {
+    credentials: "include",
+    method: "POST",
+  }).then(handleResponse);
+}

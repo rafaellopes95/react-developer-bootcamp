@@ -6,6 +6,7 @@ import {
   ICalendar,
   IEditingEvent,
   IEvent,
+  IUser,
 } from "./backend";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
@@ -15,7 +16,12 @@ import { Calendar, ICalendarCell, IEventWithCalendar } from "./Calendar";
 import { EventFormDialog } from "./EventFormDialog";
 import { getToday } from "./dateFunctions";
 
-export function CalendarScreen() {
+interface ICalendarScreenProps {
+  onSignOut: () => void;
+  user: IUser;
+}
+
+export function CalendarScreen(props: ICalendarScreenProps) {
   // Pegando o parâmetro de URL month usando o hook useParams
   const { month } = useParams();
   const [calendars, setCalendars] = useState<ICalendar[]>([]);
@@ -85,7 +91,11 @@ export function CalendarScreen() {
       </Box>
 
       <Box flex="1" display="flex" flexDirection="column">
-        <CalendarHeader month={month!} />
+        <CalendarHeader
+          month={month!}
+          user={props.user}
+          onSignOut={props.onSignOut}
+        />
         <Calendar
           weeks={weeks}
           onClickDay={openNewEvent}

@@ -11,14 +11,21 @@ function App() {
   const [user, setUser] = useState<IUser | null>(null);
 
   useEffect(() => {
-    getUserEndpoint().then(setUser, () => setUser(null));
+    getUserEndpoint().then(setUser, signOut);
   }, []);
+
+  function signOut() {
+    setUser(null);
+  }
 
   if (user) {
     return (
       <BrowserRouter>
         <Routes>
-          <Route path="/calendar/:month" element={<CalendarScreen />} />
+          <Route
+            path="/calendar/:month"
+            element={<CalendarScreen user={user} onSignOut={signOut} />}
+          />
           <Route path="/" element={<Navigate to={"/calendar/" + month} />} />
         </Routes>
       </BrowserRouter>
