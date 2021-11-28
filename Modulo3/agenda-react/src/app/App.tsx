@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { getToday } from "./dateFunctions";
 import { useEffect, useState } from "react";
 import { getUserEndpoint } from "./backend";
+import { LoginScreen } from "./LoginScreen";
 
 function App() {
   const month = getToday().substring(0, 7);
@@ -26,7 +27,7 @@ function App() {
       </BrowserRouter>
     );
   } else {
-    return <div>Login</div>;
+    return <LoginScreen />;
   }
 }
 
