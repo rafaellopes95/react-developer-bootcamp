@@ -2,22 +2,19 @@ import { CalendarScreen } from "./CalendarScreen";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { getToday } from "./dateFunctions";
 import { useEffect, useState } from "react";
-import { getUserEndpoint } from "./backend";
+import { getUserEndpoint, IUser } from "./backend";
 import { LoginScreen } from "./LoginScreen";
 
 function App() {
   const month = getToday().substring(0, 7);
 
-  const [hasSession, setHasSession] = useState(false);
+  const [user, setUser] = useState<IUser | null>(null);
 
   useEffect(() => {
-    getUserEndpoint().then(
-      () => setHasSession(true),
-      () => setHasSession(false)
-    );
+    getUserEndpoint().then(setUser, () => setUser(null));
   }, []);
 
-  if (hasSession) {
+  if (user) {
     return (
       <BrowserRouter>
         <Routes>
@@ -27,7 +24,7 @@ function App() {
       </BrowserRouter>
     );
   } else {
-    return <LoginScreen />;
+    return <LoginScreen onSignIn={setUser} />;
   }
 }
 
