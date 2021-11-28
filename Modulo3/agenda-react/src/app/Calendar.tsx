@@ -8,6 +8,7 @@ import TableRow from "@mui/material/TableRow";
 import Box from "@mui/material/Box";
 import Icon from "@mui/material/Icon";
 import { ICalendar, IEvent } from "./backend";
+import React from "react";
 
 const DAYS_OF_WEEK = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
 
@@ -53,7 +54,7 @@ interface ICalendarProps {
   onClickEvent: (event: IEvent) => void;
 }
 
-export function Calendar(props: ICalendarProps) {
+export const Calendar = React.memo(function Calendar(props: ICalendarProps) {
   const { weeks } = props;
   const classes = useStyles();
 
@@ -126,7 +127,7 @@ export function Calendar(props: ICalendarProps) {
       </Table>
     </TableContainer>
   );
-}
+});
 
 // Criando uma versão diferente da interface já existente, agregando um atributo novo.
 export type IEventWithCalendar = IEvent & { calendar: ICalendar };

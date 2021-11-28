@@ -15,3 +15,4 @@ O backend da aplicação possui os seguintes endpoints:
 ## Otimização
 
 - useMemo: Este hook permite definir um array de dependências onde somente quando houver alguma alteração neles é que o componente será renderizado novamente, assim evitando renderizações desnecessárias.
+- React.memo: Ele retorna um componente otimizado, que somente será renderizado quando houver mudança no seu props (pode não se aplicar à todos os componentes).

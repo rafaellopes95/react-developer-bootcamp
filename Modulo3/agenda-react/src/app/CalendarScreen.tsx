@@ -7,7 +7,7 @@ import {
   IEditingEvent,
   IEvent,
 } from "./backend";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router";
 import { CalendarsView } from "./CalendarsView";
 import { CalendarHeader } from "./CalendarHeader";
@@ -52,19 +52,26 @@ export function CalendarScreen() {
     getEventsEndpoint(firstDate, lastDate).then(setEvents);
   }
 
-  function toggleCalendar(i: number) {
-    const newValue = [...calendarsSelected];
-    newValue[i] = !newValue[i];
-    setCalendarsSelected(newValue);
-  }
+  // useCallback é um useMemo específico para funções, fazendo com que esta função seja atualizada somente quando necessário.
+  const toggleCalendar = useCallback(
+    (i: number) => {
+      const newValue = [...calendarsSelected];
+      newValue[i] = !newValue[i];
+      setCalendarsSelected(newValue);
+    },
+    [calendarsSelected]
+  );
 
-  function openNewEvent(date: string) {
-    setEditingEvent({
-      date,
-      desc: "",
-      calendarId: calendars[0].id,
-    });
-  }
+  const openNewEvent = useCallback(
+    (date: string) => {
+      setEditingEvent({
+        date,
+        desc: "",
+        calendarId: calendars[0].id,
+      });
+    },
+    [calendars]
+  );
 
   return (
     <Box display="flex" height="100%" alignItems="stretch">
